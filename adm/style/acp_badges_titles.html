@@ -1,0 +1,225 @@
+<!-- INCLUDE overall_header.html -->
+
+<a name="maincontent"></a>
+
+<!-- IF S_EDIT_TITLE -->
+
+	<a href="{U_BACK}" style="float: {S_CONTENT_FLOW_END};">&laquo; {L_BACK}</a>
+
+	<h1>{L_ACP_BADGES_MANAGE}</h1>
+
+	<p>{L_ACP_BADGES_EDIT_EXPLAIN}</p>
+
+	<!-- IF S_ERROR -->
+		<div class="errorbox">
+			<h3>{L_WARNING}</h3>
+			<p>{ERROR_MSG}</p>
+		</div>
+	<!-- ENDIF -->
+
+	<h1>{S_TITLE}</h1>
+
+	<form id="settings" method="post" action="{U_ACTION}">
+	<fieldset>
+		<legend>{L_TITLE_DETAILS}</legend>
+	<dl>
+		<dt><label>{L_TITLE_NAME}:</label></dt>
+		<dd><input name="title_name" type="text" id="title_name" value="{TITLE_NAME}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="title_desc">{L_TITLE_DESC}:</label></dt>
+		<dd><textarea id="title_desc" name="title_desc" rows="5" cols="45">{TITLE_DESC}</textarea></dd>
+		<dd><label><input type="checkbox" class="radio" name="desc_parse_bbcode"<!-- IF S_DESC_BBCODE_CHECKED --> checked="checked"<!-- ENDIF --> /> {L_PARSE_BBCODE}</label>
+			<label><input type="checkbox" class="radio" name="desc_parse_smilies"<!-- IF S_DESC_SMILIES_CHECKED --> checked="checked"<!-- ENDIF --> /> {L_PARSE_SMILIES}</label>
+			<label><input type="checkbox" class="radio" name="desc_parse_urls"<!-- IF S_DESC_URLS_CHECKED --> checked="checked"<!-- ENDIF --> /> {L_PARSE_URLS}</label></dd>
+	</dl>
+
+	</fieldset>
+
+	<fieldset class="submit-buttons">
+		<legend>{L_SUBMIT}</legend>
+		<input class="button1" type="submit" id="submit" name="update" value="{L_SUBMIT}" />&nbsp;
+		<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
+		{S_FORM_TOKEN}
+	</fieldset>
+	</form>
+
+<!-- ELSEIF S_LIST -->
+
+	<a href="{U_BACK}" style="float: {S_CONTENT_FLOW_END};">&laquo; {L_BACK}</a>
+
+	<h1>{L_TITLE_MEMBERS} :: {TITLE_NAME}</h1>
+
+	<p>{L_TITLE_MEMBERS_EXPLAIN}</p>
+	
+	<p>{TITLE_DESC}</p>
+	
+	<form id="list" method="post" action="{U_ACTION}">
+	<table cellspacing="1">
+	<thead>
+	<tr>
+		<th style="width: 50%">{L_USERNAME}</th>
+		<th>{L_BADGE_DISPLAYED_HEADER}</th>
+		<th>{L_BADGE_DATE_EARNED}</th>
+		<th>{L_MARK}</th>
+	</tr>
+	</thead>
+		<!-- BEGIN member -->
+			<!-- IF member.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
+			<td style="text-align: center;"><!-- IF member.USERNAME_COLOUR --><a href="{member.U_USER_EDIT}" style="color: #{member.USERNAME_COLOUR};" class="username-coloured">{member.USERNAME}</a><!-- ELSE --><a href="{member.U_USER_EDIT}">{member.USERNAME}</a><!-- ENDIF --></td>
+			<td style="text-align: center;">{member.DISPLAY}</td>
+			<td style="text-align: center;">{member.DATE_EARNED}</td>
+			<td style="text-align: center;"><input type="checkbox" class="radio" name="mark[]" value="{member.USER_ID}" /></td>
+		</tr>
+		<!-- BEGINELSE -->
+		<tr>
+			<td class="row1" colspan="5" style="text-align: center;">{L_BADGE_NO_MEMBERS}</td>
+		</tr>
+		<!-- END member -->
+	</tbody>
+	</table>
+	<!-- IF PAGINATION -->
+	<div class="pagination">
+			<a href="#" onclick="jumpto(); return false;" title="{L_JUMP_TO_PAGE}">{S_ON_PAGE}</a> &bull; <span>{PAGINATION}</span>
+	</div>
+	<!-- ENDIF -->
+	
+	<fieldset class="quick">
+		<input class="button2" type="submit" name="deleteusers" value="{L_BADGE_DELETE_MARKED}" />
+		<p class="small"><a href="#" onclick="marklist('list', 'mark', true); return false;">{L_MARK_ALL}</a> &bull; <a href="#" onclick="marklist('list', 'mark', false); return false;">{L_UNMARK_ALL}</a></p>
+	</fieldset>
+		<h1>{L_ADD_USERS}</h1>
+
+	<p>{L_ADD_USERS_EXPLAIN}</p>
+
+	<fieldset>
+		<legend>{L_ADD_USERS}</legend>
+
+	<dl>
+		<dt><label for="usernames">{L_USERNAME}:</label><br /><span>{L_USERNAMES_EXPLAIN}</span></dt>
+		<dd><textarea id="usernames" name="usernames" cols="40" rows="5"></textarea></dd>
+		<dd>[ <a href="{U_FIND_USERNAME}" onclick="find_username(this.href); return false;">{L_FIND_USERNAME}</a> ]</dd>
+	</dl>
+
+	<p class="quick">
+		<input class="button2" type="submit" name="addusers" value="{L_SUBMIT}" />
+	</p>
+	{S_FORM_TOKEN}
+	</fieldset>
+	</form>
+<!-- ELSEIF S_EDIT_USER -->
+
+	<a href="{U_BACK}" style="float: {S_CONTENT_FLOW_END};">&laquo; {L_BACK}</a>
+	<h1>{L_USER_TITLES} :: <!-- IF USERNAME_COLOUR --><a href="{U_USER_EDIT}" style="color: #{USERNAME_COLOUR};" class="username-coloured">{USER_NAME}</a><!-- ELSE --><a href="{U_USER_EDIT}">{USER_NAME}</a><!-- ENDIF --></h1>
+
+	<p>{L_USER_TITLES_EXPLAIN}</p>
+	
+	Total Titles Earned: {TOTAL_TITLES}
+	<form id="list" method="post" action="{U_ACTION}">
+	<table cellspacing="1">
+	<thead>
+	<tr>
+		<th>{L_TITLE_NAME}</th>
+		<th>{L_TITLE_DATE_EARNED}</th>
+		<th>{L_TITLE_DESC_HEADER}</th>
+		<th>{L_MARK}</th>
+	</tr>
+	</thead>
+		<!-- BEGIN titlelist -->
+			<!-- IF titlelist.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
+			<td style="text-align: center;"><a href="{titlelist.U_TITLE_EDIT}">{titlelist.TITLENAME}</a></td>
+			<td style="text-align: center;">{titlelist.DATE_EARNED}</td>
+			<td style="text-align: left;">{titlelist.DESC}</td>
+			<td style="text-align: center;"><input type="checkbox" class="radio" name="mark[]" value="{titlelist.TITLE_ID}" /></td>
+			
+		</tr>
+		<!-- BEGINELSE -->
+		<tr>
+			<td class="row1" colspan="5" style="text-align: center;">{L_USER_NO_TITLES}</td>
+		</tr>
+		<!-- END member -->
+	</tbody>
+	</table>
+
+
+	<!-- IF HAS_TITLES -->
+	<fieldset class="quick">
+		<input class="button2" type="submit" name="deletebadges" value="{L_BADGE_DELETE_MARKED}" />
+		<p class="small"><a href="#" onclick="marklist('list', 'mark', true); return false;">{L_MARK_ALL}</a> &bull; <a href="#" onclick="marklist('list', 'mark', false); return false;">{L_UNMARK_ALL}</a></p>
+	</fieldset>
+		<div id="error" style="float: left; padding: 3px;"></div>
+		<div style="width: 48%;">
+			<strong>Displayed Title:</strong>
+			<select style="width: 80%;" name="displayed" id="displayed">{S_TITLES_OPTIONS}</select>
+			<input type="submit" id="save" name="update" value="{L_SAVE}" class="button1" />
+		</div>
+
+	<!-- ELSE -->
+		<strong>{L_USER_NO_TITLES}</strong>
+	<!-- ENDIF -->
+	<p></p>
+	<div style="clear: both;">
+	<h1>{L_USER_ADD_TITLE}</h1>
+
+	<p>{L_USER_ADD_TITLE_EXPLAIN}</p>
+
+		<select style="width: 50%;" name="unearned[]" id="unearned" multiple="multiple" size="15">{S_UNEARNED_OPTIONS}</select>
+
+	<p>
+		<input class="button2" type="submit" name="addbadges" value="{L_TITLE_ADD}" />
+	</p>
+	</div>
+	{S_FORM_TOKEN}
+	</form>
+
+<!-- ELSE -->
+	<h1>{L_ACP_BADGES_MANAGE}</h1>
+
+	<p>{L_ACP_BADGES_EDIT_EXPLAIN}</p>
+
+	<!-- IF S_ERROR -->
+		<div class="errorbox">
+			<h3>{L_WARNING}</h3>
+			<p>{ERROR_MSG}</p>
+		</div>
+	<!-- ENDIF -->
+
+	<h1>{S_TITLE}</h1>
+	
+	<p>Number of Titles: {NUM_TITLES}</p>
+	<form id="acp_badges" method="post" action="{U_ACTION}">
+
+	<table cellspacing="1">
+		<col class="col1" /><col class="col1" /><col class="col2" /><col class="col2" /><col class="col2" />
+	<thead>
+	<tr>
+		<th style="width: 50%">{S_HEADER_TYPE}</th>
+		<th>Earned</th>
+		<th colspan="2">Options</th>
+		<th>{L_ACTION}</th>
+	</tr>
+	</thead>
+	<tbody>
+	<!-- BEGIN titles -->
+		<tr>
+			<td><strong>{titles.TITLE}</strong></td>
+			<td style="text-align: center;">{titles.TOTAL}</td>
+			<td style="text-align: center;"><a href="{titles.U_EDIT}">{L_SETTINGS}</a></td>
+			<td style="text-align: center;"><a href="{titles.U_LIST}">{L_MEMBERS}</a></td>
+			<td style="text-align: center;"><!-- IF titles.U_DELETE --><a href="{titles.U_DELETE}">{L_DELETE}</a><!-- ELSE -->{L_DELETE}<!-- ENDIF --></td>
+		</tr>
+	<!-- END titles -->
+	</tbody>
+	</table>
+	<!-- IF PAGINATION -->
+	<div class="pagination">
+			<a href="#" onclick="jumpto(); return false;" title="{L_JUMP_TO_PAGE}">{S_ON_PAGE}</a> &bull; <span>{PAGINATION}</span>
+	</div>
+	<!-- ENDIF -->
+	<fieldset class="quick">
+			Create New Title: <input type="text" name="title_name" value="" /> <input class="button2" type="submit" name="add" value="{L_SUBMIT}" />
+		{S_FORM_TOKEN}
+	</fieldset>
+	</form>
+<!-- ENDIF -->		
+<!-- INCLUDE overall_footer.html -->

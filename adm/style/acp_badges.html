@@ -1,0 +1,314 @@
+<!-- INCLUDE overall_header.html -->
+
+<a name="maincontent"></a>
+
+<!-- IF S_EDIT_BADGE -->
+
+	<a href="{U_BACK}" style="float: {S_CONTENT_FLOW_END};">&laquo; {L_BACK}</a>
+
+	<h1>{L_ACP_BADGES_MANAGE}</h1>
+
+	<p>{L_ACP_BADGES_EDIT_EXPLAIN}</p>
+
+	<!-- IF S_ERROR -->
+		<div class="errorbox">
+			<h3>{L_WARNING}</h3>
+			<p>{ERROR_MSG}</p>
+		</div>
+	<!-- ENDIF -->
+
+	<h1>{S_TITLE}</h1>
+
+	<form id="settings" method="post" action="{U_ACTION}">
+	<fieldset>
+		<legend>{L_BADGE_DETAILS}</legend>
+	<dl>
+		<dt><label>{L_BADGE_NAME}:</label></dt>
+		<dd><input name="badge_name" type="text" id="badge_name" value="{BADGE_NAME}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="badge_desc">{L_BADGE_DESC}:</label></dt>
+		<dd><textarea id="badge_desc" name="badge_desc" rows="5" cols="45">{BADGE_DESC}</textarea></dd>
+		<dd><label><input type="checkbox" class="radio" name="desc_parse_bbcode"<!-- IF S_DESC_BBCODE_CHECKED --> checked="checked"<!-- ENDIF --> /> {L_PARSE_BBCODE}</label>
+			<label><input type="checkbox" class="radio" name="desc_parse_smilies"<!-- IF S_DESC_SMILIES_CHECKED --> checked="checked"<!-- ENDIF --> /> {L_PARSE_SMILIES}</label>
+			<label><input type="checkbox" class="radio" name="desc_parse_urls"<!-- IF S_DESC_URLS_CHECKED --> checked="checked"<!-- ENDIF --> /> {L_PARSE_URLS}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="badge_url">{L_BADGE_IMAGE_URL}:</label><br /><span>{L_BADGE_URL_EXPLAIN}</span></dt>
+		<dd><input name="badge_url" type="text" id="badge_url" value="{BADGE_URL}" /></dd>
+	</dl>
+	<dl>
+		<dt><label>{L_CURRENT_IMAGE}:</label></dt>
+		<dd>{BADGE_IMAGE}</dd>
+	</dl>
+	</fieldset>
+
+	<fieldset class="submit-buttons">
+		<legend>{L_SUBMIT}</legend>
+		<input class="button1" type="submit" id="submit" name="update" value="{L_SUBMIT}" />&nbsp;
+		<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
+		{S_FORM_TOKEN}
+	</fieldset>
+	</form>
+
+<!-- ELSEIF S_LIST -->
+
+	<a href="{U_BACK}" style="float: {S_CONTENT_FLOW_END};">&laquo; {L_BACK}</a>
+
+	<h1>{L_BADGE_MEMBERS} :: {BADGE_NAME}</h1>
+
+	<p>{L_BADGE_MEMBERS_EXPLAIN}</p>
+	
+	<p>{BADGE_DESC}</p>
+	
+	<form id="list" method="post" action="{U_ACTION}">
+	<table cellspacing="1">
+	<thead>
+	<tr>
+		<th style="width: 50%">{L_USERNAME}</th>
+		<th>{L_BADGE_DISPLAYED_HEADER}</th>
+		<th>{L_BADGE_DATE_EARNED}</th>
+		<th>{L_MARK}</th>
+	</tr>
+	</thead>
+		<!-- BEGIN member -->
+			<!-- IF member.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
+			<td style="text-align: center;"><!-- IF member.USERNAME_COLOUR --><a href="{member.U_USER_EDIT}" style="color: #{member.USERNAME_COLOUR};" class="username-coloured">{member.USERNAME}</a><!-- ELSE --><a href="{member.U_USER_EDIT}">{member.USERNAME}</a><!-- ENDIF --></td>
+			<td style="text-align: center;">{member.DISPLAY}</td>
+			<td style="text-align: center;">{member.DATE_EARNED}</td>
+			<td style="text-align: center;"><input type="checkbox" class="radio" name="mark[]" value="{member.USER_ID}" /></td>
+		</tr>
+		<!-- BEGINELSE -->
+		<tr>
+			<td class="row1" colspan="5" style="text-align: center;">{L_BADGE_NO_MEMBERS}</td>
+		</tr>
+		<!-- END member -->
+	</tbody>
+	</table>
+	<!-- IF PAGINATION -->
+	<div class="pagination">
+			<a href="#" onclick="jumpto(); return false;" title="{L_JUMP_TO_PAGE}">{S_ON_PAGE}</a> &bull; <span>{PAGINATION}</span>
+	</div>
+	<!-- ENDIF -->
+	
+	<fieldset class="quick">
+		<input class="button2" type="submit" name="deleteusers" value="{L_BADGE_DELETE_MARKED}" />
+		<p class="small"><a href="#" onclick="marklist('list', 'mark', true); return false;">{L_MARK_ALL}</a> &bull; <a href="#" onclick="marklist('list', 'mark', false); return false;">{L_UNMARK_ALL}</a></p>
+	</fieldset>
+		<h1>{L_ADD_USERS}</h1>
+
+	<p>{L_ADD_USERS_EXPLAIN}</p>
+
+	<fieldset>
+		<legend>{L_ADD_USERS}</legend>
+
+	<dl>
+		<dt><label for="usernames">{L_USERNAME}:</label><br /><span>{L_USERNAMES_EXPLAIN}</span></dt>
+		<dd><textarea id="usernames" name="usernames" cols="40" rows="5"></textarea></dd>
+		<dd>[ <a href="{U_FIND_USERNAME}" onclick="find_username(this.href); return false;">{L_FIND_USERNAME}</a> ]</dd>
+	</dl>
+
+	<p class="quick">
+		<input class="button2" type="submit" name="addusers" value="{L_SUBMIT}" />
+	</p>
+	{S_FORM_TOKEN}
+	</fieldset>
+	</form>
+<!-- ELSEIF S_EDIT_USER -->
+
+	<a href="{U_BACK}" style="float: {S_CONTENT_FLOW_END};">&laquo; {L_BACK}</a>
+	<h1>{L_USER_BADGES} :: <!-- IF USERNAME_COLOUR --><a href="{U_USER_EDIT}" style="color: #{USERNAME_COLOUR};" class="username-coloured">{USER_NAME}</a><!-- ELSE --><a href="{U_USER_EDIT}">{USER_NAME}</a><!-- ENDIF --></h1>
+
+	<p>{L_USER_BADGES_EXPLAIN}</p>
+	
+	Total Badges Earned: {TOTAL_BADGES}
+	<form id="list" method="post" action="{U_ACTION}">
+	<table cellspacing="1">
+	<thead>
+	<tr>
+		<th>{L_BADGE_NAME}</th>
+		<th>{L_BADGE_IMAGE_HEADER}</th>
+		<th>{L_BADGE_DATE_EARNED}</th>
+		<th>{L_BADGE_DESC_HEADER}</th>
+		<th>{L_MARK}</th>
+	</tr>
+	</thead>
+		<!-- BEGIN badgelist -->
+			<!-- IF badgelist.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
+			<td style="text-align: center;"><a href="{badgelist.U_BADGE_EDIT}">{badgelist.BADGENAME}</a></td>
+			<td style="text-align: center;">{badgelist.IMAGE}</td>
+			<td style="text-align: center;">{badgelist.DATE_EARNED}</td>
+			<td style="text-align: left;">{badgelist.DESC}</td>
+			<td style="text-align: center;"><input type="checkbox" class="radio" name="mark[]" value="{badgelist.BADGE_ID}" /></td>
+			
+		</tr>
+		<!-- BEGINELSE -->
+		<tr>
+			<td class="row1" colspan="5" style="text-align: center;">{L_USER_NO_BADGES}</td>
+		</tr>
+		<!-- END member -->
+	</tbody>
+	</table>
+
+
+	<!-- IF HAS_BADGES -->
+	<fieldset class="quick">
+		<input class="button2" type="submit" name="deletebadges" value="{L_BADGE_DELETE_MARKED}" />
+		<p class="small"><a href="#" onclick="marklist('list', 'mark', true); return false;">{L_MARK_ALL}</a> &bull; <a href="#" onclick="marklist('list', 'mark', false); return false;">{L_UNMARK_ALL}</a></p>
+	</fieldset>
+		<div style="float: left; width: 48%; display: inline;">
+			<strong>Unworn Badges:</strong>
+			<select style="width: 80%;" name="unworn[]" id="unworn" multiple="multiple" size="10">{S_BADGES_OPTIONS}</select>
+			<div style="float: right; display: inline; margin: auto;">
+				<img id="moveleft" src="../images/left.png" alt="Remove Badge">
+				<br>
+				<img id="moveright" src="../images/right.png" alt="Wear Badge">
+			</div>
+		</div>
+		
+		<div style="float: right; width: 48%; display: inline;">
+			<strong>Worn Badges:</strong>
+			<select style="width: 80%;" name="worn[]" id="worn" multiple="multiple" size="10">{S_WORN_OPTIONS}</select>
+			<div style="float: right; display: inline; margin: auto;">
+				<img id="moveup" src="../images/up.png" alt="Move Up">
+				<br>
+				<img id="movedown" src="../images/down.png" alt="Move Down">
+			</div>
+			<div id="preview" style="display: block; padding-top: 3px"><strong>Preview: </strong> {PREVIEW}</div>			
+		</div>
+		<div id="error" style="float: left; padding: 3px;"></div>
+		<div style="float: right; padding:3px; position:relative; right:20px;"><input type="submit" id="save" name="update" value="{L_SAVE}" class="button1" /></div>
+	<!-- ELSE -->
+		<strong>{L_USER_NO_BADGES}</strong>
+	<!-- ENDIF -->
+	<p></p>
+	<div style="clear: both;">
+	<h1>{L_USER_ADD_BADGE}</h1>
+
+	<p>{L_USER_ADD_BADGE_EXPLAIN}</p>
+
+		<select style="width: 50%;" name="unearned[]" id="unearned" multiple="multiple" size="15">{S_UNEARNED_OPTIONS}</select>
+
+	<p>
+		<input class="button2" type="submit" name="addbadges" value="{L_BADGE_ADD}" />
+	</p>
+	</div>
+	{S_FORM_TOKEN}
+	</form>
+	<script type="text/JavaScript" 
+src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+<script>
+// <!--
+jQuery(function() {
+	$('#moveright').click(function(event) {
+		var numbadges = $('#unworn option:selected').size() + $('#worn option').size();
+		// TODO: Probably shouldn't hardcode the max number of badges
+		if(numbadges > 5) {
+			error('You can only wear 5 badges at a time.');
+			return false;
+		} else {
+			$("#worn option:selected").removeAttr('selected');
+			$('#unworn option:selected').remove().appendTo('#worn').each(function() {
+				var img = $('table img[data-id="'+$(this).val()+'"]').clone();
+				img.insertAfter($('#preview strong,#preview img').last());
+				$(document.createTextNode(' ')).insertBefore(img);
+				$('#worn option[value="merylplaceholder"]').remove();
+			})
+		}
+		error("Remember to click Save!");
+	});
+	$('#moveleft').click(function(event) {
+		$("#unworn option:selected").removeAttr('selected');
+		$('#worn option:selected').remove().appendTo('#unworn').each(function() {
+			$('#preview img[data-id="'+$(this).val()+'"]').remove();
+		});
+		$('#unworn option[value="merylplaceholder"]').remove();
+		error("Remember to click Save!");
+	});
+	$('#moveup').click(function(event) {
+		$('#worn option:selected').each(function() {
+			$(this).insertBefore($(this).prev());
+			var img = $('#preview img[data-id="'+$(this).val()+'"]');
+			img.insertBefore(img.prev('img'));
+			$(document.createTextNode(' ')).insertAfter(img);
+
+		});
+		error("Remember to click Save!");
+	});
+	$('#movedown').click(function(event) {
+		$('#worn option:selected').each(function() {
+			$(this).insertAfter($(this).next());
+			var img = $('#preview img[data-id="'+$(this).val()+'"]');
+			img.insertAfter(img.next('img'));
+			$(document.createTextNode(' ')).insertBefore(img);
+		});
+		error("Remember to click Save!");
+	});
+	$('#save').click(function(event) {
+		$('#worn option').attr('selected',true);
+		return true;
+	});
+});
+
+
+function error (str) {
+	$('div#error').children().remove().end().append($('<p class="error">'+str+'</p>'));
+}
+// -->
+</script>
+<!-- ELSE -->
+	<h1>{L_ACP_BADGES_MANAGE}</h1>
+
+	<p>{L_ACP_BADGES_EDIT_EXPLAIN}</p>
+
+	<!-- IF S_ERROR -->
+		<div class="errorbox">
+			<h3>{L_WARNING}</h3>
+			<p>{ERROR_MSG}</p>
+		</div>
+	<!-- ENDIF -->
+
+	<h1>{S_TITLE}</h1>
+	
+	<!-- 
+	<p>You have chosen mode: {S_TITLE}</p>
+	<p>You have permission to edit badges: {S_PERMISSION}</p>
+	-->
+	<p>Number of Badges: {NUM_BADGES}</p>
+	<form id="acp_badges" method="post" action="{U_ACTION}">
+
+	<table cellspacing="1">
+		<col class="col1" /><col class="col1" /><col class="col2" /><col class="col2" /><col class="col2" />
+	<thead>
+	<tr>
+		<th style="width: 50%">{S_HEADER_TYPE}</th>
+		<th>Earned</th>
+		<th colspan="2">Options</th>
+		<th>{L_ACTION}</th>
+	</tr>
+	</thead>
+	<tbody>
+	<!-- BEGIN badges -->
+		<tr>
+			<td><strong>{badges.B_NAME}</strong></td>
+			<td style="text-align: center;">{badges.B_TOTAL}</td>
+			<td style="text-align: center;"><a href="{badges.U_EDIT}">{L_SETTINGS}</a></td>
+			<td style="text-align: center;"><a href="{badges.U_LIST}">{L_MEMBERS}</a></td>
+			<td style="text-align: center;"><!-- IF badges.U_DELETE --><a href="{badges.U_DELETE}">{L_DELETE}</a><!-- ELSE -->{L_DELETE}<!-- ENDIF --></td>
+		</tr>
+	<!-- END badges -->
+	</tbody>
+	</table>
+	<!-- IF PAGINATION -->
+	<div class="pagination">
+			<a href="#" onclick="jumpto(); return false;" title="{L_JUMP_TO_PAGE}">{S_ON_PAGE}</a> &bull; <span>{PAGINATION}</span>
+	</div>
+	<!-- ENDIF -->
+	<fieldset class="quick">
+			Create New Badge: <input type="text" name="badge_name" value="" /> <input class="button2" type="submit" name="submit" value="{L_SUBMIT}" />
+			<input type="hidden" name="add" value="1" />
+		{S_FORM_TOKEN}
+	</fieldset>
+	</form>
+<!-- ENDIF -->		
+<!-- INCLUDE overall_footer.html -->

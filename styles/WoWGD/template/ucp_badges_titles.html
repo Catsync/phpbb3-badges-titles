@@ -1,0 +1,63 @@
+<!-- INCLUDE ucp_header.html -->
+
+<table class="tablebg" width="100%" cellspacing="1">
+<tr>
+	<th colspan="2" valign="middle">{L_TITLE}</th>
+</tr>
+<tr>
+	<td class="row3" colspan="2"><span class="gensmall">{L_UCP_TITLES_EXPLAIN}</span></td>
+</tr>
+<!-- IF ERROR -->
+	<tr>
+		<td class="row3" colspan="2" align="center"><span class="gensmall error">{ERROR}</span></td>
+	</tr>
+<!-- ENDIF -->
+<form id="ucp" method="post" action="{S_UCP_ACTION}"{S_FORM_ENCTYPE}>
+
+	<!-- IF HAS_TITLES -->
+<tr>
+	<td>
+	<form id="list" method="post" action="{U_ACTION}">
+		<table class="badgetable" cellspacing="1" style="width:90%;">
+		<thead>
+		<tr>
+			<th class="badgeheader">{L_TITLE_NAME}</th>
+			<th class="badgeheader">{L_TITLE_DATE_EARNED}</th>
+			<th class="badgeheader">{L_TITLE_DESC_HEADER}</th>
+		</tr>
+		</thead>
+			<!-- BEGIN titlelist -->
+				<!-- IF titlelist.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
+				<td style="text-align: left;"><a href="{titlelist.U_TITLE_EDIT}">{titlelist.TITLENAME}</a></td>
+				<td style="text-align: center;">{titlelist.DATE_EARNED}</td>
+				<td style="text-align: left;">{titlelist.DESC}</td>
+				
+			</tr>
+			<!-- BEGINELSE -->
+			<tr>
+				<td class="row1" colspan="5" style="text-align: center;">{L_USER_NO_TITLES}</td>
+			</tr>
+			<!-- END member -->
+		</tbody>
+		</table>
+	</td>
+<tr>
+	<td>
+		<div style="width: 48%; padding-top:10px;">
+		<strong>Displayed Title:</strong>
+		<select style="width: 80%;" name="displayed" id="displayed">{S_TITLES_OPTIONS}</select>
+		<input type="submit" id="save" name="submit" value="{L_SAVE}" class="button1" />
+		{S_FORM_TOKEN}
+		</div>
+	</td>
+</tr>
+
+	<!-- ELSE -->
+		<tr><td><strong>{L_UCP_NO_TITLES}</strong></td></tr>
+	<!-- ENDIF -->
+	<span class="corners-bottom"><span></span></span></div>
+
+
+</form>
+</table>
+<!-- INCLUDE ucp_footer.html -->

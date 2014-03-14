@@ -1,0 +1,140 @@
+<!-- INCLUDE ucp_header.html -->
+
+<form id="ucp" method="post" action="{S_UCP_ACTION}"{S_FORM_ENCTYPE}>
+<table class="tablebg" width="100%" cellspacing="1">
+<tr>
+	<th colspan="2" valign="middle">{L_TITLE}</th>
+</tr>
+<tr>
+	<td class="row3" colspan="2"><span class="gensmall">{L_UCP_BADGES_EXPLAIN}</span></td>
+</tr>
+
+<tr>
+	<td class="row3" colspan="2" align="center"><div id="error"><!-- IF ERROR --><p class="error">{ERROR}</p><!-- ELSE --><p class="error">Use the arrows to move things around...</p><!-- ENDIF --></div></td>
+</tr>
+	
+<tr>
+	<td width="20%">
+		<label <!-- IF S_BADGES_OPTIONS -->for="badges"<!-- ENDIF -->>{L_YOUR_BADGES}:</label><br /><span>{L_YOUR_BADGES_EXPLAIN}</span></dt>
+	</td>
+	<td>
+			<!-- IF HAS_BADGES -->
+				<div style="float: left; width: 48%; display: inline;">
+					<strong>Unworn Badges:</strong>
+					<select style="width: 80%;" name="unworn[]" id="unworn" multiple="multiple" size="10">{S_BADGES_OPTIONS}</select>
+					<div style="float: right; display: inline; margin: auto;">
+						<img id="moveleft" src="images/left.png" alt="Remove Badge">
+						<br>
+						<img id="moveright" src="images/right.png" alt="Wear Badge">
+					</div>
+				</div>
+				
+				<div style="float: right; width: 48%; display: inline;">
+					<strong>Worn Badges:</strong><!-- IF S_MAX_BADGES --> (Maximum: {S_MAX_BADGES})<!-- ENDIF -->
+					<select style="width: 80%;" name="worn[]" id="worn" multiple="multiple" size="10">{S_WORN_OPTIONS}</select>
+					<div style="float: right; display: inline; margin: auto;">
+						<img id="moveup" src="images/up.png" alt="Move Up">
+						<br>
+						<img id="movedown" src="images/down.png" alt="Move Down">
+					</div>
+					<div id="preview" style="display: block; padding-top: 3px"><strong>Preview: </strong> {PREVIEW}</div>			
+				</div>
+				<div style="float: right; padding:3px; position:relative; right:20px;"><input type="submit" id="save" name="submit" value="{L_SUBMIT}" class="button1" /></div>
+				{S_FORM_TOKEN}
+			<!-- ELSE -->
+				<strong>{L_UCP_NO_BADGES}</strong>
+			<!-- ENDIF -->
+	</td>
+</tr>
+<tr>
+	<td colspan="2">
+		<table class="badgetable" cellspacing="1" width="90%">
+		<thead>
+		<tr>
+			<th class="badgeheader">{L_BADGENAME}</th>
+			<th class="badgeheader">{L_BADGE_IMAGE_HEADER}</th>
+			<th class="badgeheader">{L_BADGE_DATE_EARNED}</th>
+			<th class="badgeheader">{L_BADGE_DESC_HEADER}</th>
+		</tr>
+		</thead>
+			<!-- BEGIN badgelist -->
+				<!-- IF badgelist.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
+				<td style="text-align: left;">{badgelist.BADGENAME}</td>
+				<td style="text-align: center;">{badgelist.IMAGE}</td>
+				<td style="text-align: center;">{badgelist.DATE_EARNED}</td>
+				<td style="text-align: left;">{badgelist.DESC}</td>
+			</tr>
+			<!-- BEGINELSE -->
+			<tr>
+				<td class="row1" colspan="5" style="text-align: center;">{L_UCP_NO_BADGES}</td>
+			</tr>
+			<!-- END badgelist -->
+		</tbody>
+		</table>
+	</td>
+</tr>
+
+
+<script type="text/JavaScript" 
+src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+<script>
+// <!--
+jQuery(function() {
+	$('#moveright').click(function(event) {
+		var numbadges = $('#unworn option:selected').size() + $('#worn option').size();
+		if(numbadges > {S_MAX_BADGES}) {
+			error('You can only wear {S_MAX_BADGES} badges at a time.');
+			return false;
+		} else {
+			$("#worn option:selected").removeAttr('selected');
+			$('#unworn option:selected').remove().appendTo('#worn').each(function() {
+				var img = $('table img[data-id="'+$(this).val()+'"]').clone();
+				img.insertAfter($('#preview strong,#preview img').last());
+				$(document.createTextNode(' ')).insertBefore(img);
+				$('#worn option[value="merylplaceholder"]').remove();
+			})
+		}
+		error("Remember to click Save!");
+	});
+	$('#moveleft').click(function(event) {
+		$("#unworn option:selected").removeAttr('selected');
+		$('#worn option:selected').remove().appendTo('#unworn').each(function() {
+			$('#preview img[data-id="'+$(this).val()+'"]').remove();
+		});
+		$('#unworn option[value="merylplaceholder"]').remove();
+		error("Remember to click Save!");
+	});
+	$('#moveup').click(function(event) {
+		$('#worn option:selected').each(function() {
+			$(this).insertBefore($(this).prev());
+			var img = $('#preview img[data-id="'+$(this).val()+'"]');
+			img.insertBefore(img.prev('img'));
+			$(document.createTextNode(' ')).insertAfter(img);
+
+		});
+		error("Remember to click Save!");
+	});
+	$('#movedown').click(function(event) {
+		$('#worn option:selected').each(function() {
+			$(this).insertAfter($(this).next());
+			var img = $('#preview img[data-id="'+$(this).val()+'"]');
+			img.insertAfter(img.next('img'));
+			$(document.createTextNode(' ')).insertBefore(img);
+		});
+		error("Remember to click Save!");
+	});
+	$('#save').click(function(event) {
+		$('#worn option').attr('selected',true);
+		return true;
+	});
+});
+
+
+function error (str) {
+	$('div#error').children().remove().end().append($('<p class="error">'+str+'</p>'));
+}
+// -->
+</script>
+</form>
+
+<!-- INCLUDE ucp_footer.html -->
